@@ -626,8 +626,7 @@
         const photoLoader = new THREE.TextureLoader();
         const discTextureCount = 15;
         const discTextures = [];
-        for (let i = 1; i <= discTextureCount; i++) discTextures.push(photoLoader.load(`../roblox/roblox${i}.png`));
-
+for (let i = 1; i <= discTextureCount; i++) discTextures.push(photoLoader.load(`./roblox/roblox${i}.png`));
         // Máscara de alfa con esquinas redondeadas, compartida por todas las fotos
         // (hero + anillo) para que ninguna se vea con bordes cuadrados.
         function createRoundedMask(size = 256, radiusRatio = 0.18) {
