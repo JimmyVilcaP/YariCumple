@@ -1,0 +1,63 @@
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+p {
+	margin: 0 0;
+	position: absolute;
+	font: 16px Verdana;
+	color: #eee;
+	height: 25px;
+	top: calc( 100vh - 30px );
+	text-shadow: 0 0 2px white;
+}
+p a {
+	text-decoration: none;
+	color: #aaa;
+}
+span {
+	font-size: 11px;
+}
+p > a:first-of-type {
+	font-size: 20px;
+}
+body {
+	overflow: hidden;
+}
+
+/* Estilos para el botón sorpresa */
+#next-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 40px;
+    font: 20px Verdana, sans-serif;
+    color: #eee;
+    background: rgba(255, 255, 255, 0.05); /* Fondo casi transparente */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    text-decoration: none;
+    text-shadow: 0 0 5px white;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    
+    /* Estado inicial: oculto y sin poder recibir clics */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
+    z-index: 10;
+    text-align: center;
+}
+
+/* Clase que se añade por JS para mostrar el botón */
+#next-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Efecto al pasar el mouse por encima */
+#next-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+}

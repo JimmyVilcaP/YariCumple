@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestro Universo — Yari ♡</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+        "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.152.2/examples/jsm/controls/OrbitControls.js"
+      }
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        body { background: #09070a; min-height: 100vh; font-family: 'Quicksand', sans-serif; }
+        #container { width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 45%, #fff 0%, #ffd6e7 7%, #c46a95 22%, #5a2545 46%, #22101d 74%, #0d060c 100%); position: fixed; top: 0; left: 0; z-index: 10; overflow: hidden; }
+        #container::before, #container::after { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 12; }
+        #container::before { background-image: radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.8px), radial-gradient(circle, rgba(255,190,218,.55) 0 1px, transparent 2px); background-size: 73px 73px, 119px 119px; background-position: 13px 21px, 47px 5px; opacity: .34; animation: dustDrift 24s linear infinite; }
+        #container::after { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.22), transparent 30%), radial-gradient(circle at 20% 30%, rgba(255,215,230,.12), transparent 24%), radial-gradient(circle at 80% 65%, rgba(210,190,255,.10), transparent 25%); mix-blend-mode: screen; opacity: .8; }
+        @keyframes dustDrift { from { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(18px,-12px,0) scale(1.02); } to { transform: translate3d(0,0,0) scale(1); } }
+        canvas { position: fixed; top: 0; left: 0; z-index: 11; touch-action: none; }
+
+        #dark-overlay {
+            position: fixed; z-index: 5; inset: 0;
+            background: rgba(8, 5, 8, 0.94);
+            pointer-events: none; opacity: 1;
+            transition: opacity 1.4s ease-in-out;
+        }
+        body.intro-started #dark-overlay { opacity: 0; }
+
+        /* ---- Título: nítido, con capas de sombra fija en vez de blur puro ---- */
+        #valentine-title {
+            position: fixed;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 9999;
+            font-family: 'Dancing Script', cursive;
+            font-weight: 700;
+            font-size: clamp(26px, 7vw, 46px);
+            color: #fff;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            -webkit-text-stroke: 0.6px rgba(255,255,255,0.5);
+            text-shadow:
+                0 0 2px #fff,
+                0 0 8px rgba(255, 225, 238, 0.98),
+                0 0 18px rgba(255, 145, 190, 0.72),
+                0 2px 6px rgba(0,0,0,0.55);
+            animation: titleGlow 2.6s ease-in-out infinite alternate;
+            opacity: 0;
+            transition: opacity 1s ease 0.3s;
+        }
+        body.intro-started #valentine-title { opacity: 1; }
+
+        #universe-subtitle {
+            position: fixed;
+            top: 68px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            color: rgba(255, 248, 252, 0.96);
+            font-family: 'Quicksand', sans-serif;
+            font-size: clamp(10px, 2.7vw, 14px);
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255, 137, 180, 0.55);
+            transition: opacity 1s ease 0.55s;
+        }
+
+        body.intro-started #universe-subtitle { opacity: 1; }
+
+        /* ---- VISOR DE RECUERDOS ---- */
+        #memory-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(8, 4, 8, 0.78);
+            backdrop-filter: blur(14px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .35s ease, visibility .35s ease;
+        }
+
+        #memory-modal.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .memory-card {
+            position: relative;
+            width: min(88vw, 520px);
+            max-height: 88vh;
+            padding: 12px 12px 20px;
+            border: 1px solid rgba(255,255,255,.72);
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(255,250,253,.98), rgba(255,226,238,.96));
+            box-shadow:
+                0 0 0 1px rgba(255,180,210,.35),
+                0 18px 70px rgba(0,0,0,.5),
+                0 0 45px rgba(255,164,199,.28);
+            transform: translateY(14px) scale(.96);
+            transition: transform .4s cubic-bezier(.2,.8,.2,1);
+        }
+
+        #memory-modal.open .memory-card {
+            transform: translateY(0) scale(1);
+        }
+
+        #memory-image {
+            display: block;
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: 16px;
+            background: rgba(255,255,255,.45);
+            box-shadow: 0 8px 30px rgba(100,45,70,.16);
+        }
+
+        #memory-message {
+            margin: 14px 12px 2px;
+            color: #653a4d;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(22px, 5vw, 30px);
+            line-height: 1.15;
+            text-align: center;
+        }
+
+        #memory-hint {
+            margin-top: 7px;
+            color: #a36b83;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 11px;
+            text-align: center;
+            letter-spacing: .5px;
+        }
+
+        #memory-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255,255,255,.9);
+            border-radius: 50%;
+            background: rgba(255,241,247,.96);
+            color: #8d4d68;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 5px 18px rgba(0,0,0,.25);
+            z-index: 2;
+        }
+
+        #memory-close:hover {
+            transform: scale(1.06);
+        }
+
+        .memory-openable {
+            cursor: pointer !important;
+        }
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 2px #fff, 0 0 8px rgba(255,174,210,0.98), 0 0 18px rgba(255,105,170,0.72), 0 2px 6px rgba(0,0,0,0.55); }
+            to   { text-shadow: 0 0 3px #fff, 0 0 12px rgba(216,160,255,1), 0 0 26px rgba(255,105,170,0.9), 0 2px 6px rgba(0,0,0,0.55); }
+        }
+
+        #touch-hint {
+            position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%);
+            background: rgba(55, 24, 40, 0.68);
+            color: #fff4f9;
+            padding: 10px 22px; border-radius: 22px;
+            font-size: 13px; font-weight: 500;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 190, 218, 0.38);
+            text-align: center; pointer-events: none;
+            animation: hintPulse 1.8s ease-in-out infinite;
+            white-space: nowrap;
+        }
+        @keyframes hintPulse { 0%,100%{opacity:.75; transform:translateX(-50%) translateY(0);} 50%{opacity:1; transform:translateX(-50%) translateY(-4px);} }
+        body.intro-started #touch-hint { opacity: 0; transition: opacity .8s; pointer-events: none; }
+
+        #fullscreen-btn {
+            position: fixed; top: 16px; right: 16px; z-index: 10000;
+            background: rgba(55, 24, 40, 0.72);
+            border: 1.5px solid rgba(255,190,218,0.48);
+            border-radius: 50%; width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #fff4f9;
+            backdrop-filter: blur(6px);
+        }
+    
+/* ===== MEJORAS BLANCO/ROSA ===== */
+.memory-card{width:min(88vw,500px);padding:14px 14px 22px;border-radius:26px;background:linear-gradient(160deg,#fff,#ffeaf2);border:1px solid #fff;box-shadow:0 0 0 6px rgba(255,255,255,.18),0 24px 80px rgba(0,0,0,.5),0 0 60px rgba(255,150,195,.45);transform:translateY(30px) scale(.9) rotate(-2deg);transition:transform .55s cubic-bezier(.2,.9,.3,1.3)}
+#memory-modal.open .memory-card{transform:none}
+#memory-image{border-radius:18px;border:6px solid #fff;box-shadow:0 10px 30px rgba(176,74,114,.25)}
+#memory-message{color:#b04a72}
+#memory-close{transition:transform .3s}
+#memory-close:hover{transform:rotate(90deg) scale(1.1)}
+#valentine-title{background:linear-gradient(100deg,#fff,#ffc4dc,#fff,#ffc4dc);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:0;text-shadow:none;filter:drop-shadow(0 0 10px rgba(255,150,195,.8));animation:titleShine 5s linear infinite}
+@keyframes titleShine{to{background-position:-250% 0}}
+#touch-hint{background:rgba(255,255,255,.9);color:#b04a72;font-weight:700;border:1px solid #ffd0e2;box-shadow:0 8px 30px rgba(255,150,195,.5)}
+#fullscreen-btn{background:rgba(255,255,255,.9);color:#b04a72;border:1px solid #ffd0e2;box-shadow:0 6px 20px rgba(255,150,195,.45);transition:transform .25s}
+#fullscreen-btn:hover{transform:scale(1.1) rotate(8deg)}
+#final-msg{position:fixed;left:50%;bottom:70px;transform:translate(-50%,20px);z-index:9999;padding:12px 26px;border-radius:999px;background:rgba(255,255,255,.92);color:#b04a72;font:700 clamp(18px,4.5vw,26px) 'Dancing Script',cursive;box-shadow:0 10px 40px rgba(255,150,195,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:opacity 1s,transform 1s}
+#final-msg.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+    <button id="fullscreen-btn" title="Pantalla completa"><i id="fullscreen-icon" class="fa-solid fa-expand" style="font-size:18px;"></i></button>
+    <div id="valentine-title">Yari, mi personita favorita ♡ ✨</div>
+    <div id="universe-subtitle">✦ · un pequeño universo para celebrar tu día · 24.09 · ✦</div>
+    <div id="container"></div>
+    <div id="touch-hint"><i class="fa-solid fa-star"></i>&nbsp; toca la luna para entrar a nuestro universo ♡</div>
+    <div id="dark-overlay"></div>
+    <div id="final-msg">feliz cumpleaños, Yari ♡ toca una foto ✨</div>
+
+    <div id="memory-modal" aria-hidden="true">
+        <div class="memory-card">
+            <button id="memory-close" aria-label="Cerrar recuerdo">×</button>
+            <img id="memory-image" src="" alt="Recuerdo de Yari">
+            <div id="memory-message"></div>
+            <div id="memory-hint">un pequeño recuerdo de nosotros ♡</div>
+        </div>
+    </div>
+
+    <!-- DATOS EDITABLES -->
+    <script>
+        window.dataLove2Loveloom = {
+            data: {
+                ringTexts: ["YARI, MI PERSONA FAVORITA ♡", "MI DÚO FAVORITAAA ✧"]
+            }
+        };
+
+        window.musicManager = {
+            audio: null,
+            init() {
+                this.audio = new Audio("./audio/universo.mp3");
+                this.audio.loop = true;
+                this.audio.volume = 0.6;
+            },
+            play() { if (this.audio) this.audio.play().catch(e => console.warn('Autoplay bloqueado', e)); }
+        };
+        document.addEventListener('DOMContentLoaded', () => window.musicManager.init());
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const isMobile = Math.min(window.innerWidth, window.innerHeight) < 700;
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0b070a, 0.0011);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+        // Arranca cerca de la luna, mirando de frente: sensación de "solo el planeta,
+        // universo vacío" antes de tocar. El resto (nebulosas, fotos, anillo de texto de fondo)
+        // se revela al alejarse y subir tras el click.
+        camera.position.set(0, 3, 19);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 2 : 2.5));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.4;
+        controls.enabled = false;
+        controls.minDistance = 14;
+        controls.maxDistance = 200;
+        controls.enablePan = false;
+
+        // =========================================================
+        // 1. NEBULOSAS — más definidas y con núcleo sólido, menos "manchadas"
+        // =========================================================
+        function createGlowTexture(colorStops, size = 512, blurPx = 0) {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            if (blurPx > 0) ctx.filter = `blur(${blurPx}px)`;
+            // el radio se reduce un poco cuando hay blur para que el desenfoque no se corte en el borde del canvas
+            const radius = blurPx > 0 ? size / 2 * 0.82 : size / 2;
+            const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, radius);
+            colorStops.forEach(([stop, color]) => gradient.addColorStop(stop, color));
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        // Todas las nebulosas creadas se guardan aquí para animarles el fade-in tras el click.
+        const nebulaSprites = [];
+
+        function createNebula(hue, opacity, scale, stretchX = 1, stretchY = 1) {
+            // Nebulosa difusa con color bien saturado: bajamos la luminosidad y el
+            // alfa del núcleo (antes muy claro/opaco, por eso con el blending
+            // aditivo y tanto solapamiento terminaba viéndose blanco).
+            const core = hue === 0 ? 'rgba(255,255,255,0.46)' : `hsla(${hue}, 82%, 68%, 0.50)`;
+            const mid  = hue === 0 ? 'rgba(255,238,246,0.25)' : `hsla(${hue}, 78%, 56%, 0.28)`;
+            const soft = `hsla(${hue}, 78%, 42%, 0.12)`;
+            const edge = `hsla(${hue}, 70%, 20%, 0)`;
+            const tex = createGlowTexture([[0, core], [0.30, mid], [0.64, soft], [1, edge]], 512, 14);
+            const mat = new THREE.SpriteMaterial({
+                map: tex, transparent: true, opacity: 0, // arranca invisible, se revela al hacer click
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(scale * stretchX * 1.25, scale * stretchY * 1.25, 1);
+            sprite.material.rotation = (Math.random() - 0.5) * 0.7;
+            sprite.userData.targetOpacity = opacity;
+            nebulaSprites.push(sprite);
+            return sprite;
+        }
+
+        // Nebulosas repartidas por todo el universo, con tamaños muy variados
+        // y tonos alegres: rosa, magenta, violeta, azul, cyan, turquesa, verde,
+        // dorado y coral. Cada zona tiene varias capas para verse como una nube,
+        // no como un único punto luminoso.
+        const nebulaClusters = [
+            { center: [-125, 55, -85],  hues: [335, 0, 320, 285] },
+            { center: [135, 65, -105],  hues: [350, 325, 285, 340] },
+            { center: [15, 78, -165],   hues: [320, 0, 300, 275] },
+            { center: [-105, -38, 55],  hues: [350, 315, 285, 335] },
+            { center: [125, -48, 55],   hues: [330, 0, 310, 295] },
+            { center: [-35, 18, -225],  hues: [300, 335, 350, 275] },
+            { center: [210, 18, 85],    hues: [345, 285, 320] },
+            { center: [-205, 8, 105],    hues: [315, 350, 275] },
+            { center: [55, -80, -70],    hues: [350, 300, 285] },
+        ];
+
+        nebulaClusters.forEach((cluster, ci) => {
+            cluster.hues.forEach((hue, i) => {
+                const hero = i === 0;
+                // más grandes y con más solapamiento entre capas: que se lean
+                // como una sola nube difusa y no como manchas separadas
+                const scale = hero ? 160 + Math.random() * 130 : 85 + Math.random() * 110;
+                const stretchX = 1.2 + Math.random() * 1.3;
+                const stretchY = 0.6 + Math.random() * 0.7;
+                const nebula = createNebula(
+                    hue,
+                    hero ? 0.34 + Math.random() * 0.10 : 0.22 + Math.random() * 0.12,
+                    scale,
+                    stretchX,
+                    stretchY
+                );
+                const dirAngle = (i / cluster.hues.length) * Math.PI * 2 + Math.random() * 0.8;
+                const offset = 14 + Math.random() * 20; // más cerca del centro del cluster = más solapadas
+                nebula.position.set(
+                    cluster.center[0] + Math.cos(dirAngle) * offset,
+                    cluster.center[1] + (Math.random() - 0.5) * 30,
+                    cluster.center[2] + Math.sin(dirAngle) * offset
+                );
+                scene.add(nebula);
+            });
+        });
+
+        // Pequeñas nubes alegres entre las zonas grandes para evitar huecos y
+        // reforzar la sensación de continuidad entre nebulosas.
+        const accentNebulas = [
+            [-55, 48, -95, 340, 70, 1.8, 0.55],
+            [72, 32, -125, 320, 60, 1.5, 0.7],
+            [-70, -15, 20, 350, 55, 1.9, 0.6],
+            [82, -22, 35, 315, 65, 1.6, 0.65],
+            [15, 58, 55, 335, 50, 1.8, 0.55],
+            [-150, -18, -30, 345, 60, 1.7, 0.6],
+            [155, 22, -10, 305, 55, 1.9, 0.55],
+            [-30, -55, -100, 325, 65, 1.6, 0.6],
+            [100, 60, 30, 350, 58, 1.7, 0.55],
+            [-160, 40, 60, 315, 55, 1.6, 0.6],
+        ];
+        accentNebulas.forEach(([x, y, z, hue, scale, sx, sy]) => {
+            const n = createNebula(hue, 0.20 + Math.random() * 0.12, scale, sx, sy);
+            n.position.set(x, y, z);
+            scene.add(n);
+        });
+
+        // Brillo central detrás de la luna, ajustado a su tamaño real
+        const centralGlow = createNebula(330, 0.24, 26);
+        scene.add(centralGlow);
+
+        // =========================================================
+        // 2. LUNA MORADA — cráteres, mares y halo, en vez de planeta genérico
+        // =========================================================
+        function createMoonTexture(size = 1024) {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // base lunar: gris pálido a gris carbón, look de luna real
+            const base = ctx.createRadialGradient(size*0.38, size*0.35, size*0.05, size*0.5, size*0.5, size*0.62);
+            base.addColorStop(0, '#fff8fb');
+            base.addColorStop(0.35, '#eadde2');
+            base.addColorStop(0.65, '#b9a8ae');
+            base.addColorStop(1, '#65535a');
+            ctx.fillStyle = base;
+            ctx.fillRect(0, 0, size, size);
+
+            // "mares" lunares (manchas suaves más oscuras)
+            for (let i = 0; i < 10; i++) {
+                const x = Math.random() * size, y = Math.random() * size, r = size * (0.06 + Math.random() * 0.12);
+                const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+                g.addColorStop(0, 'rgba(60, 56, 52, 0.45)');
+                g.addColorStop(1, 'rgba(60, 56, 52, 0)');
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, size, size);
+            }
+
+            // cráteres
+            for (let i = 0; i < 140; i++) {
+                const x = Math.random() * size, y = Math.random() * size, r = 3 + Math.random() * (size * 0.02);
+                const shade = ctx.createRadialGradient(x - r*0.3, y - r*0.3, 0, x, y, r);
+                shade.addColorStop(0, 'rgba(255,255,255,0.18)');
+                shade.addColorStop(0.5, 'rgba(50,48,45,0.25)');
+                shade.addColorStop(1, 'rgba(50,48,45,0)');
+                ctx.fillStyle = shade;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const moonRadius = 9;
+        const moonGeo = new THREE.SphereGeometry(moonRadius, 64, 64);
+        const moonTexture = createMoonTexture();
+        const moonMat = new THREE.MeshStandardMaterial({
+            map: moonTexture,
+            roughness: 0.92,
+            metalness: 0.15,
+            emissive: new THREE.Color(0x2a2420),
+            emissiveIntensity: 0.18
+        });
+        const moon = new THREE.Mesh(moonGeo, moonMat);
+        moon.name = 'main-planet';
+        scene.add(moon);
+
+        // luz suave y neutra para que la textura gris se mantenga gris (no amarilla)
+        const moonLight = new THREE.PointLight(0xffe8f0, 1.5, 200, 1.6);
+        moonLight.position.set(30, 25, 20);
+        scene.add(moonLight);
+        scene.add(new THREE.AmbientLight(0xc7aeb8, 0.55));
+
+        // halo dorado alrededor de la luna (borde luminoso, solo en el filo, no tiñe toda la esfera)
+        function createRimGlow() {
+            const geo = new THREE.SphereGeometry(moonRadius * 1.06, 48, 48);
+            const mat = new THREE.ShaderMaterial({
+                uniforms: {},
+                vertexShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        float rim = clamp(0.68 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);
+                        float intensity = pow(rim, 2.2);
+                        gl_FragColor = vec4(1.0, 0.58, 0.76, intensity * 0.88);
+                    }
+                `,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                transparent: true,
+                depthWrite: false
+            });
+            return new THREE.Mesh(geo, mat);
+        }
+        moon.add(createRimGlow());
+
+        // =========================================================
+        // 3. ANILLOS DE TEXTO — más nítidos (mayor resolución de canvas + doble trazo)
+        // =========================================================
+        window.textRings = [];
+        const ringTexts = window.dataLove2Loveloom.data.ringTexts;
+
+        function createTextRings() {
+            const baseRadius = moonRadius * 1.18; // más pegados al círculo central
+            for (let i = 0; i < ringTexts.length; i++) {
+                const radius = baseRadius + i * 2.1;
+                const text = ringTexts[i] + '   ✧   ';
+
+                const fontSize = 105; // un poco más chico, sigue nítido al escalar
+                const measureCanvas = document.createElement('canvas');
+                const mctx = measureCanvas.getContext('2d');
+                mctx.font = `bold ${fontSize}px 'Quicksand', sans-serif`;
+                const textWidth = mctx.measureText(text).width;
+
+                const circumference = 2 * Math.PI * radius * 38;
+                const repeat = Math.max(1, Math.ceil(circumference / textWidth));
+                const fullText = text.repeat(repeat);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.min(textWidth * repeat, 16384);
+                canvas.height = 220;
+                const ctx = canvas.getContext('2d');
+
+                ctx.font = `bold ${fontSize}px 'Quicksand', sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
+                // contorno oscuro para nitidez + relleno blanco brillante (evita el "borroso")
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = 'rgba(105, 38, 72, 0.9)';
+                ctx.strokeText(fullText, 0, 110);
+
+                ctx.shadowColor = '#ff9fc5';
+                ctx.shadowBlur = 14;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(fullText, 0, 110);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                texture.needsUpdate = true;
+
+                const geo = new THREE.CylinderGeometry(radius, radius, 1.8, 96, 1, true);
+                const mat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide, alphaTest: 0.05 });
+                const mesh = new THREE.Mesh(geo, mat);
+
+                const group = new THREE.Group();
+                group.add(mesh);
+                group.rotation.x = (Math.PI / 9) * (i % 2 === 0 ? 1 : -1);
+                group.userData.speed = 0.0022 + i * 0.0009;
+
+                scene.add(group);
+                window.textRings.push(group);
+            }
+        }
+        createTextRings();
+
+        // =========================================================
+        // 4. ESTRELLAS DE FONDO
+        // =========================================================
+        const starCount = isMobile ? 9000 : 16000;
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(starCount * 3);
+        const starSizes = new Float32Array(starCount);
+        for (let i = 0; i < starCount; i++) {
+            starPos[i * 3] = (Math.random() - 0.5) * 900;
+            starPos[i * 3 + 1] = (Math.random() - 0.5) * 900;
+            starPos[i * 3 + 2] = (Math.random() - 0.5) * 900;
+            starSizes[i] = Math.random() * 1.6 + 0.4;
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starField = new THREE.Points(starGeo, new THREE.PointsMaterial({
+            color: 0xffe0ee, size: 0.9, transparent: true, opacity: 0.85, sizeAttenuation: true
+        }));
+        scene.add(starField);
+
+        // =========================================================
+        // 5. ESTRELLAS FUGACES — más largas, brillantes y con destello real
+        // =========================================================
+        let shootingStars = [];
+
+        function createShootingStar() {
+            const headGeo = new THREE.SphereGeometry(1.6, 16, 16);
+            const headMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+            const head = new THREE.Mesh(headGeo, headMat);
+
+            // núcleo extra brillante
+            const coreGeo = new THREE.SphereGeometry(0.7, 12, 12);
+            const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, blending: THREE.AdditiveBlending });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            head.add(core);
+
+            // halo tipo destello
+            const glowTex = createGlowTexture([[0, 'rgba(255,255,255,1)'], [0.4, 'rgba(255,184,212,0.6)'], [1, 'rgba(255,184,212,0)']], 256);
+            const glowMat = new THREE.SpriteMaterial({ map: glowTex, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+            const glow = new THREE.Sprite(glowMat);
+            glow.scale.set(9, 9, 1);
+            head.add(glow);
+
+            const startPoint = new THREE.Vector3(-260 + Math.random()*120, 40 + Math.random()*160, -150 + Math.random()*200);
+            const endPoint = new THREE.Vector3(500 + Math.random()*200, startPoint.y - 130 - Math.random()*140, startPoint.z + (-100 + Math.random()*200));
+            const cp1 = new THREE.Vector3(startPoint.x + 220, startPoint.y - 40, startPoint.z - 60);
+            const cp2 = new THREE.Vector3(endPoint.x - 220, endPoint.y + 40, endPoint.z + 60);
+            const curve = new THREE.CubicBezierCurve3(startPoint, cp1, cp2, endPoint);
+
+            const trailLength = 70;
+            const trailPoints = [];
+            for (let i = 0; i < trailLength; i++) trailPoints.push(curve.getPoint(i / (trailLength - 1)));
+            const trailGeo = new THREE.BufferGeometry().setFromPoints(trailPoints);
+            const trailMat = new THREE.LineBasicMaterial({ color: 0xffb8d4, transparent: true, opacity: 0.85 });
+            const trail = new THREE.Line(trailGeo, trailMat);
+
+            const group = new THREE.Group();
+            group.add(head); group.add(trail);
+            group.userData = {
+                curve, progress: 0,
+                speed: 0.0016 + Math.random() * 0.0018,
+                head, core, trail, trailPoints, trailLength
+            };
+            scene.add(group);
+            shootingStars.push(group);
+        }
+
+        // =========================================================
+        // 5.5 FOTOS — combinación de "hero" (grandes, con aura, pocas) +
+        // un DISCO/ANILLO en espiral de fotitos repetidas, igual que la referencia
+        // =========================================================
+        const photoLoader = new THREE.TextureLoader();
+        const discTextureCount = 15;
+        const discTextures = [];
+        for (let i = 1; i <= discTextureCount; i++) discTextures.push(photoLoader.load(`../roblox/roblox${i}.png`));
+
+        // Máscara de alfa con esquinas redondeadas, compartida por todas las fotos
+        // (hero + anillo) para que ninguna se vea con bordes cuadrados.
+        function createRoundedMask(size = 256, radiusRatio = 0.18) {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            const r = size * radiusRatio;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.arcTo(size, 0, size, size, r);
+            ctx.arcTo(size, size, 0, size, r);
+            ctx.arcTo(0, size, 0, 0, r);
+            ctx.arcTo(0, 0, size, 0, r);
+            ctx.closePath();
+            ctx.fill();
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            return tex;
+        }
+        const roundedMask = createRoundedMask();
+
+        // --- fotos hero: grandes, con aura, pocas, alrededor de la luna ---
+        const floatingPhotos = [];
+
+        // Mensajitos para las fotos principales. Se asignan según roblox1.png ... roblox15.png.
+        const memoryMessages = [
+            "un recuerdo que siempre me hace sonreír, el mejor de todosss ♡",
+            "nuestras partiditas en DV TT lloroo",
+            "de las primeras veces que viciabamos robloxcito🎮",
+            "uno de tantos momentos que guardo con cariño (Besto juegoo)✨",
+            "mi dúo favorito siempre (gracias por jugar conmigo) ♡",
+            "gracias por cada risa y cada partida",
+            "billarcito de chill 🎀",
+            "por muchas aventuras más contigo, ame MC",
+            "cuando terminaste la casita, me encantooo",
+            "juegazo la vrd, pasamos buenos momentos",
+            "camellito bonitoo, ame los dias de mc",
+            "otro recuerdo para nuestro pequeño universo 🌙",
+            "jejeje juegazoo, fotico de la fosa",
+            "por todas las partidas que todavía nos faltan",
+            "feliz cumpleaños, Yari ♡"
+        ];
+        const heroPhotoCount = isMobile ? 9 : 14;
+
+        function createPhotoFrame(texture) {
+            const w = 7, h = 7;
+            const geo = new THREE.PlaneGeometry(w, h);
+            const mat = new THREE.MeshBasicMaterial({ map: texture, alphaMap: roundedMask, transparent: true, side: THREE.DoubleSide, opacity: 0 });
+            const mesh = new THREE.Mesh(geo, mat);
+
+            const frameTex = createGlowTexture([[0, 'rgba(255,204,225,0.95)'], [0.6, 'rgba(255,175,207,0.32)'], [1, 'rgba(255,155,195,0)']], 256);
+            const frameMat = new THREE.SpriteMaterial({ map: frameTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+            const frame = new THREE.Sprite(frameMat);
+            frame.scale.set(w * 1.7, h * 1.7, 1);
+            frame.position.z = -0.05;
+
+            const group = new THREE.Group();
+            group.add(frame);
+            group.add(mesh);
+            return { group, mesh, frame };
+        }
+
+        // Los recuerdos forman un cinturón: poca altura y mucha circunferencia.
+        // Así se lee como un anillo tipo Saturno en vez de una nube vertical.
+        const RING_INNER = 38;
+        const RING_OUTER = 68;
+        const RING_HEIGHT = 4;
+        const ringTilt = -0.08; // menos inclinado que antes
+
+        for (let i = 0; i < heroPhotoCount; i++) {
+            const texture = discTextures[i % discTextureCount];
+            const photo = createPhotoFrame(texture);
+            photo.mesh.userData.memoryIndex = i % memoryMessages.length;
+            photo.mesh.userData.openable = true;
+            photo.mesh.userData.baseTexture = texture;
+            photo.mesh.userData.elementType = 'memory-photo';
+            photo.mesh.material.opacity = 0;
+            photo.mesh.userData.message = memoryMessages[i % memoryMessages.length];
+
+            const angle = (i / heroPhotoCount) * Math.PI * 2 + Math.random() * 0.22;
+            const radius = 56 + Math.random() * 13;
+            photo.group.position.set(
+                Math.cos(angle) * radius,
+                (Math.random() - 0.5) * RING_HEIGHT,
+                Math.sin(angle) * radius
+            );
+            photo.group.rotation.z = ringTilt;
+            photo.group.lookAt(0, photo.group.position.y, 0);
+            photo.group.userData = {
+                baseY: photo.group.position.y,
+                bobSpeed: 0.22 + Math.random() * 0.14,
+                bobPhase: Math.random() * Math.PI * 2,
+                ringAngle: angle,
+                ringRadius: radius
+            };
+            scene.add(photo.group);
+            floatingPhotos.push(photo);
+        }
+
+        // --- ANILLO DE RECUERDOS: muchas fotitos pequeñas distribuidas de forma
+        // uniforme en una banda circular, con variación radial mínima y casi sin
+        // dispersión vertical. La referencia se siente como un cinturón galáctico.
+        const discGroup = new THREE.Group();
+        discGroup.rotation.x = ringTilt;
+        scene.add(discGroup);
+        const discSprites = [];
+
+        const discCount = isMobile ? 260 : 480;
+        for (let i = 0; i < discCount; i++) {
+            const tex = discTextures[i % discTextureCount];
+            const size = 0.95 + Math.random() * 1.25;
+            const geo = new THREE.PlaneGeometry(size, size);
+            const mat = new THREE.MeshBasicMaterial({
+                map: tex, alphaMap: roundedMask, transparent: true, side: THREE.DoubleSide,
+                depthWrite: false, opacity: 0
+            });
+            const sprite = new THREE.Mesh(geo, mat);
+
+            const angle = (i / discCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.10;
+            const radius = RING_INNER + Math.random() * (RING_OUTER - RING_INNER);
+            const y = (Math.random() - 0.5) * RING_HEIGHT + Math.sin(angle * 3.0) * 0.45;
+
+            sprite.position.set(
+                Math.cos(angle) * radius,
+                y,
+                Math.sin(angle) * radius
+            );
+            sprite.userData = {
+                baseOpacity: 100,
+                ringAngle: angle,
+                ringRadius: radius
+            };
+            discGroup.add(sprite);
+            discSprites.push(sprite);
+        }
+
+        // =========================================================
+        // 5.6 FRASES FLOTANTES — palabritas bonitas con destellos, apareciendo y desvaneciéndose
+        // =========================================================
+        const lovePhrases = [
+            "gracias por tu amistad ♡",
+            "qué bonito haberte encontrado",
+            "mi dúo favorito 🎀",
+            "contigo cualquier juego es mejor",
+            "gracias por cada charla",
+            "gracias por cada risa",
+            "eres una personita muy especial",
+            "me encanta compartir contigo",
+            "nuestro pequeño universo ✨",
+            "siempre hacemos buen equipo",
+            "qué suerte tenerte como amiga",
+            "por todos nuestros momentos",
+            "por todas nuestras aventuras",
+            "jugar contigo siempre es divertido",
+            "gracias por quedarte",
+            "me haces sonreír mucho",
+            "nuestra amistad es muy bonita",
+            "siempre habrá otro juego para nosotras",
+            "siempre habrá algo de qué hablar",
+            "gracias por confiar en mí",
+            "me alegra coincidir contigo",
+            "mi compañera de aventuras",
+            "que nunca nos falten las risas",
+            "por muchas partidas más 🎮",
+            "por muchas charlas más",
+            "feliz cumpleaños, Yari ♡",
+            "17 vueltas al sol ✨",
+            "hoy el universo celebra a Yari",
+            "tu amistad es un regalo",
+            "te quiero muchísimo, Yari ♡"
+        ];
+
+        function createPhraseSprite(text) {
+            const fontSize = 58; // frase única, más limpia y legible
+            // frase única para que cada aparición se sienta limpia y especial
+            const repeated = text;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.font = `600 ${fontSize}px 'Quicksand', sans-serif`;
+            const textWidth = ctx.measureText(repeated).width;
+            canvas.width = textWidth + 90;
+            canvas.height = fontSize * 2;
+            const ctx2 = canvas.getContext('2d');
+
+            ctx2.font = `600 ${fontSize}px 'Quicksand', sans-serif`;
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.shadowColor = '#ff9fc5';
+            ctx2.shadowBlur = 22;
+            ctx2.fillStyle = '#fffafd';
+            ctx2.fillText(repeated, canvas.width / 2, canvas.height / 2);
+
+            // destellitos alrededor del texto
+            ctx2.shadowBlur = 14;
+            ctx2.fillStyle = 'rgba(255, 205, 225, 0.95)';
+            ctx2.font = `${fontSize * 0.4}px sans-serif`;
+            ctx2.fillText('✦', canvas.width * 0.06, canvas.height * 0.22);
+            ctx2.fillText('✧', canvas.width * 0.94, canvas.height * 0.78);
+            ctx2.fillText('·', canvas.width * 0.14, canvas.height * 0.8);
+            ctx2.fillText('✧', canvas.width * 0.9, canvas.height * 0.2);
+            ctx2.fillText('✿', canvas.width * 0.03, canvas.height * 0.62);
+            ctx2.fillText('♡', canvas.width * 0.97, canvas.height * 0.45);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+            const sprite = new THREE.Sprite(mat);
+            const aspect = canvas.width / canvas.height;
+            const h = 3.1; // ligeramente más chico que antes
+            sprite.scale.set(h * aspect, h, 1);
+            return sprite;
+        }
+
+        const floatingPhrases = [];
+        function spawnPhrase() {
+            if (floatingPhrases.length >= 13) return;
+            const text = lovePhrases[Math.floor(Math.random() * lovePhrases.length)];
+            const sprite = createPhraseSprite(text);
+            // Las frases también viven en el cinturón, con altura controlada.
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 42 + Math.random() * 26;
+            sprite.position.set(
+                Math.cos(angle) * radius,
+                (Math.random() - 0.5) * 7,
+                Math.sin(angle) * radius
+            );
+            sprite.userData = {
+                life: 0,
+                maxLife: 320 + Math.random() * 140,
+                baseY: sprite.position.y
+            };
+            scene.add(sprite);
+            floatingPhrases.push(sprite);
+        }
+
+        // =========================================================
+        // 6. INTERACCIÓN
+        // =========================================================
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        window.introStarted = false;
+
+        function startIntro() {
+    if (window.introStarted) return;
+
+    window.introStarted = true;
+    document.body.classList.add('intro-started');
+
+    window.musicManager.play();
+
+    const duration = 25000; // Duración total: 15 segundos
+    const startTime = performance.now();
+
+    const startPos = camera.position.clone();
+
+    // Posición final de la cámara
+    const endPos = new THREE.Vector3(
+        startPos.x,
+        27,
+        120
+    );
+
+    function animateCamera(currentTime) {
+
+        // Tiempo transcurrido en milisegundos
+        const elapsed = currentTime - startTime;
+
+        // Progreso de 0 a 1
+        const progress = Math.min(elapsed / duration, 1);
+
+// Movimiento más lento y suave
+const t = Math.pow(progress, 1.8);
+
+// =========================================
+// FASE 1: ALEJARSE
+// =========================================
+
+camera.position.x = startPos.x;
+
+camera.position.z =
+    startPos.z +
+    (endPos.z - startPos.z) * t;
+
+
+        // =========================================
+        // FASE 2: SUBIR
+        // Empieza después del 60%
+        // =========================================
+
+        const tY = Math.max(
+            0,
+            (t - 0.6) / 0.4
+        );
+
+        // Smoothstep
+        const tYEased =
+            tY * tY * (3 - 2 * tY);
+
+        camera.position.y =
+            startPos.y +
+            (endPos.y - startPos.y) * tYEased;
+
+
+        // =========================================
+        // MIRAR AL PLANETA
+        // =========================================
+
+        camera.lookAt(0, 0, 0);
+
+
+        // =========================================
+        // CONTINUAR ANIMACIÓN
+        // =========================================
+
+        if (progress < 1) {
+
+            requestAnimationFrame(animateCamera);
+
+        } else {
+
+            // Animación terminada
+            controls.target.set(0, 0, 0);
+
+            controls.enabled = true;
+            const fm = document.getElementById('final-msg'); fm.classList.add('show'); setTimeout(() => fm.classList.remove('show'), 7000);
+
+            controls.update();
+        }
+    }
+
+    // Iniciar animación
+    requestAnimationFrame(animateCamera);
+}
+
+        function onCanvasInteract(clientX, clientY) {
+            if (window.introStarted) return;
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const hit = raycaster.intersectObject(moon);
+            if (hit.length > 0) startIntro();
+        }
+        renderer.domElement.addEventListener('click', (e) => onCanvasInteract(e.clientX, e.clientY));
+        renderer.domElement.addEventListener('touchend', (e) => {
+            if (e.changedTouches && e.changedTouches[0]) {
+                onCanvasInteract(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            }
+        }, { passive: true });
+
+        // =========================================================
+        // 6.5 VISOR DE RECUERDOS
+        // =========================================================
+        const memoryModal = document.getElementById('memory-modal');
+        const memoryImage = document.getElementById('memory-image');
+        const memoryMessage = document.getElementById('memory-message');
+        const memoryClose = document.getElementById('memory-close');
+
+        function openMemory(photo) {
+            const texture = photo.mesh.userData.baseTexture;
+            const source = texture && texture.image ? texture.image.currentSrc || texture.image.src : '';
+            if (!source) return;
+
+            memoryImage.src = source;
+            memoryMessage.textContent = photo.mesh.userData.message || "un recuerdo bonito de nosotros ♡";
+            memoryModal.classList.add('open');
+            memoryModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeMemory() {
+            memoryModal.classList.remove('open');
+            memoryModal.setAttribute('aria-hidden', 'true');
+            setTimeout(() => { memoryImage.src = ''; }, 300);
+        }
+
+        memoryClose.addEventListener('click', closeMemory);
+        memoryModal.addEventListener('click', (e) => {
+            if (e.target === memoryModal) closeMemory();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeMemory();
+        });
+
+        // Click/tap en una foto principal para abrirla.
+        renderer.domElement.addEventListener('click', (e) => {
+            if (!window.introStarted || memoryModal.classList.contains('open')) return;
+
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            const photoMeshes = floatingPhotos.map(p => p.mesh);
+            const hits = raycaster.intersectObjects(photoMeshes, false);
+            if (hits.length) {
+                const selected = floatingPhotos.find(p => p.mesh === hits[0].object);
+                if (selected) openMemory(selected);
+            }
+        });
+
+        // En móvil, abrir con toque sobre una foto.
+        renderer.domElement.addEventListener('touchend', (e) => {
+            if (!window.introStarted || memoryModal.classList.contains('open')) return;
+            if (!e.changedTouches || !e.changedTouches[0]) return;
+
+            const touch = e.changedTouches[0];
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            const photoMeshes = floatingPhotos.map(p => p.mesh);
+            const hits = raycaster.intersectObjects(photoMeshes, false);
+            if (hits.length) {
+                const selected = floatingPhotos.find(p => p.mesh === hits[0].object);
+                if (selected) openMemory(selected);
+            }
+        }, { passive: true });
+
+        // =========================================================
+        // 7. LOOP
+        // =========================================================
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            controls.update();
+            moon.rotation.y += 0.0009;
+            moon.scale.setScalar(window.introStarted ? 1 : 1 + Math.sin(time * 2) * 0.025);
+            starField.material.opacity = 0.7 + Math.sin(time * 1.5) * 0.15;
+            starField.rotation.y += 0.00008;
+
+            window.textRings.forEach(ring => { ring.rotation.y += ring.userData.speed; });
+
+            for (let i = shootingStars.length - 1; i >= 0; i--) {
+                const s = shootingStars[i];
+                s.userData.progress += s.userData.speed;
+                if (s.userData.progress > 1) { scene.remove(s); shootingStars.splice(i, 1); continue; }
+
+                const pos = s.userData.curve.getPoint(s.userData.progress);
+                s.position.copy(pos);
+
+                const p = s.userData.progress;
+                const opacity = p < 0.08 ? p / 0.08 : (p > 0.88 ? (1 - p) / 0.12 : 1);
+                s.userData.head.material.opacity = opacity;
+                s.userData.core.material.opacity = opacity;
+                s.userData.trail.material.opacity = opacity * 0.8;
+
+                const tp = s.userData.trailPoints;
+                tp[0].copy(pos);
+                for (let j = 1; j < s.userData.trailLength; j++) {
+                    const tprog = Math.max(0, s.userData.progress - j * 0.006);
+                    tp[j].copy(s.userData.curve.getPoint(tprog));
+                }
+                s.userData.trail.geometry.setFromPoints(tp);
+            }
+            if (shootingStars.length < 2 && Math.random() < 0.015) createShootingStar();
+
+            // nebulosas: invisibles al inicio (universo vacío), aparecen suave tras el click
+            nebulaSprites.forEach(n => {
+                const target = window.introStarted ? n.userData.targetOpacity : 0;
+                n.material.opacity += (target - n.material.opacity) * 0.02;
+            });
+
+            // fotos flotantes: aparecen suave después del intro y flotan/miran a la luna
+            floatingPhotos.forEach(photo => {
+                const targetOpacity = window.introStarted ? 0.92 : 0;
+                photo.mesh.material.opacity += (targetOpacity - photo.mesh.material.opacity) * 0.02;
+                photo.frame.material.opacity += (targetOpacity * 0.7 - photo.frame.material.opacity) * 0.02;
+                const ud = photo.group.userData;
+                photo.group.position.y = ud.baseY + Math.sin(time * ud.bobSpeed + ud.bobPhase) * 1.4;
+                photo.group.lookAt(camera.position);
+            });
+
+            // disco/anillo en espiral: fade-in y rotación lenta tipo galaxia, cada fotito mira a cámara
+            discGroup.rotation.y += 0.0007;
+            discSprites.forEach(sprite => {
+                const target = window.introStarted ? sprite.userData.baseOpacity : 0;
+                sprite.material.opacity += (target - sprite.material.opacity) * 0.02;
+                sprite.lookAt(camera.position);
+            });
+
+            // frases flotantes: nacen, brillan, suben lento y se desvanecen
+            if (window.introStarted && Math.random() < 0.034) spawnPhrase();
+            for (let i = floatingPhrases.length - 1; i >= 0; i--) {
+                const p = floatingPhrases[i];
+                p.userData.life++;
+                const t = p.userData.life / p.userData.maxLife;
+                const fade = t < 0.15 ? t / 0.15 : (t > 0.8 ? (1 - t) / 0.2 : 1);
+                p.material.opacity = fade * 0.9;
+                p.position.y = p.userData.baseY + Math.sin(time * 0.45 + p.userData.life * 0.012) * 0.8;
+                if (p.userData.life > p.userData.maxLife) {
+                    scene.remove(p);
+                    floatingPhrases.splice(i, 1);
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+        createShootingStar();
+        animate();
+
+        // =========================================================
+        // 8. UI / MÓVIL
+        // =========================================================
+        document.getElementById('fullscreen-btn').onclick = () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+            else document.exitFullscreen();
+        };
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+    </script>
+</body>
+</html>

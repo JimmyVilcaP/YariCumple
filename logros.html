@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logros Desbloqueados ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fffafc; --blush:#ffeaf2; --pink:#f7bcd2; --rose:#e0708f; --deep:#b04a72;
+  --ink:#5a2a40; --muted:#8f6479; --line:rgba(224,112,143,.22);
+  --shadow:0 12px 34px rgba(224,112,143,.14);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Quicksand',Arial,sans-serif; color:var(--ink); min-height:100vh; overflow-x:hidden;
+  background:
+    radial-gradient(circle at 10% 5%,#ffdcea 0,transparent 32%),
+    radial-gradient(circle at 92% 15%,#fff 0,transparent 30%),
+    radial-gradient(circle at 80% 90%,#ffe1ee 0,transparent 35%),
+    linear-gradient(180deg,#fffafc,#fff1f6);
+  background-attachment:fixed;
+}
+canvas#petals{position:fixed;inset:0;z-index:0;pointer-events:none}
+.blob{position:fixed;border-radius:50%;filter:blur(70px);z-index:0;pointer-events:none;animation:float 12s ease-in-out infinite alternate}
+.b1{width:340px;height:340px;background:#ffc9dd;opacity:.55;top:-90px;right:-80px}
+.b2{width:280px;height:280px;background:#ffd9e8;opacity:.6;bottom:40px;left:-90px;animation-delay:-5s}
+@keyframes float{to{transform:translate(30px,40px) scale(1.15)}}
+
+/* top bar */
+.top-bar{position:fixed;top:1rem;left:0;right:0;display:flex;justify-content:space-between;padding:0 1rem;z-index:100}
+.back-btn,.music-toggle{
+  background:rgba(255,255,255,.85);border:1px solid var(--line);backdrop-filter:blur(10px);
+  box-shadow:var(--shadow);cursor:pointer;color:var(--deep);transition:transform .25s,box-shadow .25s;
+}
+.back-btn{font:600 .8rem 'Quicksand';padding:.55rem 1.1rem;border-radius:999px}
+.music-toggle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.back-btn:hover,.music-toggle:hover{transform:translateY(-2px) scale(1.04)}
+.music-bars{display:flex;align-items:center;gap:2px}
+.mbar{width:3px;background:var(--rose);border-radius:2px;animation:meq 1s ease-in-out infinite alternate}
+.mbar:nth-child(1){height:8px}.mbar:nth-child(2){height:14px;animation-delay:.2s}
+.mbar:nth-child(3){height:10px;animation-delay:.4s}.mbar:nth-child(4){height:6px;animation-delay:.1s}
+@keyframes meq{from{transform:scaleY(.3)}to{transform:scaleY(1.2)}}
+.music-toggle:not(.playing) .mbar{animation-play-state:paused;opacity:.4}
+
+.wrap{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:5.5rem 1.2rem 7rem}
+
+/* hero */
+.hero{text-align:center;margin-bottom:2.5rem}
+.page-eyebrow{display:inline-block;font-weight:600;font-size:.8rem;color:var(--deep);background:#fff;border:1px solid var(--line);
+  padding:.35rem 1rem;border-radius:999px;box-shadow:var(--shadow);margin-bottom:1rem}
+.page-title{font-family:'Dancing Script',cursive;font-size:clamp(2.8rem,9vw,5.5rem);line-height:1.05;
+  background:linear-gradient(100deg,#b04a72,#e0708f 40%,#f39ab9 60%,#b04a72);background-size:250% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:-250% 0}}
+.page-sub{color:var(--muted);font-weight:500;font-size:.9rem;margin-top:.6rem}
+.date-pill{display:inline-block;margin-top:.9rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#e0708f,#f39ab9);
+  padding:.4rem 1.2rem;border-radius:999px;box-shadow:0 8px 22px rgba(224,112,143,.35);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+
+/* stats */
+.stats-bar{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.stat{min-width:120px;text-align:center;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:22px;padding:.9rem 1.4rem;box-shadow:var(--shadow)}
+.stat-num{display:block;font-family:'Dancing Script',cursive;font-size:2.4rem;line-height:1;color:var(--rose)}
+.stat-lbl{font-size:.75rem;font-weight:600;color:var(--muted)}
+
+/* profile */
+.profile-card{position:relative;text-align:center;padding:2.2rem 1.4rem;margin-bottom:3rem;border-radius:30px;
+  background:linear-gradient(160deg,#fff,#ffeaf2);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.profile-card::before{content:'';position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent,rgba(247,188,210,.45),transparent 30%);animation:spin 9s linear infinite}
+.profile-card::after{content:'';position:absolute;inset:2px;border-radius:28px;background:linear-gradient(160deg,#fff,#fff3f8)}
+.profile-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.profile-crown{display:inline-block;font-size:2.6rem;cursor:pointer;animation:bob 3s ease-in-out infinite;user-select:none}
+@keyframes bob{50%{transform:translateY(-8px) rotate(6deg)}}
+.profile-name{font-family:'Dancing Script',cursive;font-size:clamp(2rem,7vw,3.2rem);color:var(--deep);margin:.3rem 0}
+.profile-tags{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.profile-tag{font-weight:600;font-size:.8rem;color:var(--deep);background:var(--blush);border:1px solid var(--pink);padding:.3rem .9rem;border-radius:999px}
+.profile-lvl{font-size:.8rem;font-weight:600;color:var(--muted)}
+
+/* sections */
+.section-lbl{font-family:'Dancing Script',cursive;font-size:2rem;color:var(--deep);display:flex;align-items:center;gap:1rem;margin:0 .3rem 1.2rem}
+.section-lbl::after{content:'';flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--pink),transparent)}
+
+/* achievements */
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem;margin-bottom:3rem}
+.achievement{
+  position:relative;display:flex;gap:1rem;align-items:flex-start;padding:1.3rem;border-radius:24px;
+  background:rgba(255,255,255,.92);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;
+  opacity:0;transform:translateY(24px) scale(.97);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.3,1.2),box-shadow .3s,border-color .3s;
+}
+.achievement.visible{opacity:1;transform:none}
+.achievement.visible:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:0 20px 44px rgba(224,112,143,.24);border-color:var(--rose)}
+.achievement::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);transition:left .7s}
+.achievement:hover::after{left:130%}
+.ach-badge{width:52px;height:52px;flex-shrink:0;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+  background:linear-gradient(145deg,#fff,#ffe1ee);box-shadow:0 8px 18px rgba(224,112,143,.2);transition:transform .4s}
+.achievement:hover .ach-badge{transform:rotate(-10deg) scale(1.12)}
+.ach-body{flex:1;min-width:0}
+.ach-name{font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:.3rem}
+.ach-desc{font-size:.9rem;line-height:1.55;color:var(--muted);margin-bottom:.7rem;overflow-wrap:anywhere}
+.ach-meta{display:flex;flex-wrap:wrap;gap:.4rem}
+.ach-status,.ach-rarity{font-size:.72rem;font-weight:700;padding:.2rem .7rem;border-radius:999px}
+.ach-status{background:#e9f8ef;color:#2f8a55;border:1px solid #bfe8cf}
+.ach-status.prog{background:#fff4e0;color:#b1741a;border-color:#f3dbab}
+.ach-rarity{background:var(--blush);color:var(--deep);border:1px solid var(--pink)}
+.bar{height:6px;border-radius:6px;background:var(--blush);margin-top:.7rem;overflow:hidden}
+.bar i{display:block;height:100%;width:40%;border-radius:6px;background:linear-gradient(90deg,var(--pink),var(--rose),var(--pink));background-size:200% 100%;animation:load 2.2s ease-in-out infinite alternate,shine2 2s linear infinite}
+@keyframes load{to{width:96%}}
+@keyframes shine2{to{background-position:-200% 0}}
+
+/* legendary / mythic: cards que destacan */
+.achievement.legendary{background:linear-gradient(150deg,#fff,#fff3dc 130%);border-color:#f1d08a}
+.achievement.legendary .ach-rarity{background:#fff3d6;color:#a5701a;border-color:#f1d08a}
+.achievement.mythic{grid-column:span 2;border:2px solid transparent;
+  background:linear-gradient(#fff,#fff0f6) padding-box,linear-gradient(120deg,#e0708f,#ffd1e3,#c98bff,#e0708f) border-box;background-size:100% 100%,300% 300%;animation:borderflow 5s linear infinite}
+.achievement.mythic .ach-rarity{background:linear-gradient(90deg,#e0708f,#c98bff);color:#fff;border:0}
+@keyframes borderflow{to{background-position:0 0,300% 0}}
+
+/* secrets */
+.secret-block{border-radius:26px;margin-bottom:1rem;overflow:hidden;background:rgba(255,255,255,.92);border:1px dashed var(--rose);box-shadow:var(--shadow);
+  opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.secret-block.visible{opacity:1;transform:none}
+.secret-header{display:flex;align-items:center;gap:.9rem;padding:1rem 1.3rem;background:linear-gradient(90deg,var(--blush),#fff)}
+.secret-icon{font-size:1.5rem;width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(224,112,143,.2);animation:bob 3.4s ease-in-out infinite}
+.secret-badge-lbl{font-size:.72rem;font-weight:700;color:var(--rose)}
+.secret-name{font-weight:700;font-size:1.05rem;color:var(--ink)}
+.secret-body{padding:1rem 1.3rem 1.2rem}
+.secret-desc{font-size:.92rem;line-height:1.6;color:var(--muted);margin-bottom:.6rem}
+.secret-rarity{display:inline-block;font-size:.72rem;font-weight:700;color:var(--deep);background:var(--blush);border:1px solid var(--pink);padding:.2rem .8rem;border-radius:999px}
+
+.footer-strip{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:.8rem 1rem;text-align:center;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.footer-strip p{font-size:.8rem;font-weight:600;color:var(--muted)}
+.footer-strip span{color:var(--rose);font-family:'Dancing Script',cursive;font-size:1.2rem}
+
+.heart{position:fixed;z-index:200;pointer-events:none;font-size:1.4rem;animation:pop 1.2s ease-out forwards}
+@keyframes pop{to{transform:translate(var(--x),var(--y)) scale(.4);opacity:0}}
+
+@media(max-width:620px){.achievement.mythic{grid-column:auto}.achievements-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.achievement,.secret-block{opacity:1;transform:none}}
+
+.music-ask{position:fixed;left:50%;bottom:64px;transform:translate(-50%,20px);z-index:300;display:flex;align-items:center;gap:.6rem;
+  padding:.7rem 1.4rem;border:1px solid var(--pink);border-radius:999px;cursor:pointer;font:700 .9rem 'Quicksand',sans-serif;color:var(--deep);
+  background:rgba(255,255,255,.95);box-shadow:0 12px 34px rgba(224,112,143,.4);opacity:0;pointer-events:none;transition:opacity .6s,transform .6s}
+.music-ask.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;animation:pulse 2s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop><source src="./audio/logro.mp3" type="audio/mpeg"></audio>
+<div class="blob b1"></div><div class="blob b2"></div>
+<canvas id="petals"></canvas>
+
+<div class="top-bar">
+  <button class="back-btn" onclick="window.close()">‹ cerrar</button>
+  <div class="music-toggle" id="musicToggle" role="button" aria-label="Música">
+    <div class="music-bars"><span class="mbar"></span><span class="mbar"></span><span class="mbar"></span><span class="mbar"></span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="page-eyebrow">sistema de logros · temporada yari</span>
+    <h1 class="page-title">Logros Desbloqueados</h1>
+    <p class="page-sub">amistad_id: yari_x_jimmy · estado: activa</p>
+    <span class="date-pill">24.09 · nivel 17 desbloqueado 🎂</span>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">momentos</span></div>
+    <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">risas</span></div>
+    <div class="stat"><span class="stat-num" data-count="17">0</span><span class="stat-lbl">vueltas al sol</span></div>
+  </div>
+
+  <div class="profile-card">
+    <span class="profile-crown" id="crown" title="¡tócame!">👑</span>
+    <div class="profile-name">YARI 🎀 MI DÚO</div>
+    <div class="profile-tags">
+      <span class="profile-tag">Mejor Amiga</span>
+      <span class="profile-tag">Mi Dúo</span>
+      <span class="profile-tag">Personita Especial</span>
+    </div>
+    <div class="profile-lvl">Nivel máximo · Amistad desbloqueada ♡</div>
+  </div>
+
+  <h2 class="section-lbl">Logros principales</h2>
+  <div class="achievements-grid" id="achGrid">
+
+    <div class="achievement"><div class="ach-badge">🎮</div><div class="ach-body">
+      <div class="ach-name">El Dúo Desbloqueado</div>
+      <div class="ach-desc">Encontrarnos en internet y terminar descubriendo que jugar juntas siempre podía convertirse en un buen momento.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">🎀</div><div class="ach-body">
+      <div class="ach-name">Amistad de Pantalla</div>
+      <div class="ach-desc">Demostrar que una amistad virtual también puede guardar recuerdos, confianza, risas y conversaciones muy reales.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span><span class="ach-rarity">especial</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">🎮</div><div class="ach-body">
+      <div class="ach-name">Aventureras de Roblox</div>
+      <div class="ach-desc">Probar juegos distintos, cambiar de aventura cuando nos aburrimos y aun así siempre encontrar una excusa para jugar otra cosa.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span><span class="ach-rarity">recuerdos desbloqueados</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">💬</div><div class="ach-body">
+      <div class="ach-name">Conversaciones Sin Fin</div>
+      <div class="ach-desc">Empezar hablando de cualquier tontería y terminar compartiendo historias, cosas random y momentos que solo nosotras entendemos.</div>
+      <div class="ach-meta"><span class="ach-status prog">en progreso</span><span class="ach-rarity">progreso: ∞</span></div>
+      <div class="bar"><i></i></div></div></div>
+
+    <div class="achievement legendary"><div class="ach-badge">🌙</div><div class="ach-body">
+      <div class="ach-name">Compañeras de Desvelo</div>
+      <div class="ach-desc">Quedarnos jugando o hablando cuando ya deberíamos estar durmiendo y decir 'una última' sabiendo que no será la última.</div>
+      <div class="ach-meta"><span class="ach-status">desbloqueado</span><span class="ach-rarity">legendaria</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">😂</div><div class="ach-body">
+      <div class="ach-name">Risas Incontables</div>
+      <div class="ach-desc">Acumular una cantidad imposible de momentos absurdos, bromas internas y situaciones que nos hacen reír por cualquier cosa.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span><span class="ach-rarity">nivel: infinito</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">🎮</div><div class="ach-body">
+      <div class="ach-name">Dúo Para Cualquier Juego</div>
+      <div class="ach-desc">No importa qué juego aparezca: si podemos jugarlo de a dos, probablemente terminemos probándolo juntas.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span><span class="ach-rarity">habilidad especial</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">🤍</div><div class="ach-body">
+      <div class="ach-name">Confianza Desbloqueada</div>
+      <div class="ach-desc">Llegar a ese punto donde podemos hablar de cualquier cosa y sentir que estamos en un lugar seguro para ser nosotras mismas.</div>
+      <div class="ach-meta"><span class="ach-status">desbloqueado</span><span class="ach-rarity">única</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">✨</div><div class="ach-body">
+      <div class="ach-name">Recuerdos Que Se Quedan</div>
+      <div class="ach-desc">Guardar pequeñas partidas, conversaciones y momentos que quizá parecían simples, pero terminaron significando muchísimo.</div>
+      <div class="ach-meta"><span class="ach-status">completado</span><span class="ach-rarity">colección especial</span></div></div></div>
+
+    <div class="achievement mythic"><div class="ach-badge">🌸</div><div class="ach-body">
+      <div class="ach-name">La Mejor Casualidad</div>
+      <div class="ach-desc">Conocer a alguien de manera virtual y descubrir, con el tiempo, que su amistad podía convertirse en una parte muy bonita de tus días.</div>
+      <div class="ach-meta"><span class="ach-status">desbloqueado</span><span class="ach-rarity">mítica</span></div></div></div>
+
+    <div class="achievement legendary"><div class="ach-badge">🎂</div><div class="ach-body">
+      <div class="ach-name">Cumpleaños 17 Desbloqueado</div>
+      <div class="ach-desc">Celebrar a Yari en su día y llenar este pequeño universo con recuerdos, cariño y muchas ganas de seguir creando momentos.</div>
+      <div class="ach-meta"><span class="ach-status">desbloqueado</span><span class="ach-rarity">legendaria</span></div></div></div>
+
+    <div class="achievement"><div class="ach-badge">💗</div><div class="ach-body">
+      <div class="ach-name">Amistad Sin Distancia</div>
+      <div class="ach-desc">Perú y Costa Rica están lejos en el mapa, pero eso nunca impidió que existiera un pequeño lugar donde siempre pudiéramos coincidir.</div>
+      <div class="ach-meta"><span class="ach-status prog">en progreso</span><span class="ach-rarity">progreso: ∞</span></div>
+      <div class="bar"><i></i></div></div></div>
+  </div>
+
+  <h2 class="section-lbl">Logros secretos</h2>
+
+  <div class="secret-block">
+    <div class="secret-header"><span class="secret-icon">🎀</span><div>
+      <div class="secret-badge-lbl">logro secreto desbloqueado</div><div class="secret-name">Siempre Hay Una Partida Más</div></div></div>
+    <div class="secret-body"><p class="secret-desc">Decir que ya fue la última partida, abrir otro juego cinco minutos después y terminar creando otro recuerdo juntas.</p>
+      <span class="secret-rarity">rareza: 1 de 1 ♡</span></div>
+  </div>
+
+  <div class="secret-block">
+    <div class="secret-header"><span class="secret-icon">✨</span><div>
+      <div class="secret-badge-lbl">logro ultra secreto</div><div class="secret-name">Encontrarte Entre Millones</div></div></div>
+    <div class="secret-body"><p class="secret-desc">Entrar a un mundo virtual sin saber que ese día iba a aparecer una persona que terminaría convirtiéndose en una amiga tan especial.</p>
+      <span class="secret-rarity">rareza: incalculable 🎀</span></div>
+  </div>
+
+  <div class="secret-block">
+    <div class="secret-header"><span class="secret-icon">🤍</span><div>
+      <div class="secret-badge-lbl">logro oculto</div><div class="secret-name">Nuestro Pequeño Universo</div></div></div>
+    <div class="secret-body"><p class="secret-desc">Crear un rincón hecho de recuerdos, juegos, conversaciones y pequeños detalles solo para celebrar que Yari existe.</p>
+      <span class="secret-rarity">rareza: única · desbloqueado ♡</span></div>
+  </div>
+</div>
+
+<button class="music-ask" id="musicAsk">🎵 toca para activar la música ♡</button>
+<div class="footer-strip"><p>a pesar de la distancia, siempre celebrando contigo · con cariño, <span>Akii</span></p></div>
+
+<script>
+// Pétalos cayendo
+const cv=document.getElementById('petals'),cx=cv.getContext('2d');
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
+const P=Array.from({length:32},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:6+Math.random()*9,v:.4+Math.random()*.8,
+  w:Math.random()*Math.PI*2,r:Math.random()*6,a:.35+Math.random()*.45}));
+(function draw(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  P.forEach(p=>{p.y+=p.v;p.w+=.02;p.x+=Math.sin(p.w)*.7;p.r+=.02;
+    if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width}
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.a;cx.fillStyle='#f5a9c5';
+    cx.beginPath();cx.ellipse(0,0,p.s*.55,p.s,0,0,Math.PI*2);cx.fill();cx.restore()});
+  requestAnimationFrame(draw)})();
+
+// Música: intenta sonar sola; si el navegador la bloquea, muestra el aviso
+const bg=document.getElementById('bgMusic'),mt=document.getElementById('musicToggle'),ask=document.getElementById('musicAsk');let playing=false;
+function setPlaying(v){playing=v;mt.classList.toggle('playing',v)}
+function tryPlay(){
+  return bg.play().then(()=>{setPlaying(true);ask.classList.remove('show')}).catch(()=>{ask.classList.add('show')});
+}
+tryPlay();
+ask.onclick=()=>tryPlay();
+// cualquier primer toque en la página también la activa
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,function f(e){
+  if(e.target.closest&&e.target.closest('#musicToggle'))return;
+  if(bg.paused&&!playing)tryPlay();
+  removeEventListener(ev,f);
+},{passive:true}));
+mt.onclick=()=>{if(bg.paused){tryPlay()}else{bg.pause();setPlaying(false)}};
+document.addEventListener('visibilitychange',()=>{document.hidden?bg.pause():playing&&bg.play().catch(()=>{})});
+
+// Aparición escalonada al hacer scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.achievement').forEach((el,i)=>{el.style.transitionDelay=(i%3)*90+'ms';io.observe(el)});
+document.querySelectorAll('.secret-block').forEach(el=>io.observe(el));
+
+// Contador 17
+const n=document.querySelector('[data-count]');let c=0;
+const t=setInterval(()=>{n.textContent=++c;if(c>=17)clearInterval(t)},80);
+
+// Corazones al tocar la corona
+document.getElementById('crown').onclick=e=>{
+  const r=e.target.getBoundingClientRect();
+  for(let i=0;i<14;i++){const h=document.createElement('span');h.className='heart';h.textContent=['💗','🎀','✨','🌸'][i%4];
+    h.style.left=r.left+r.width/2+'px';h.style.top=r.top+'px';
+    h.style.setProperty('--x',(Math.random()*240-120)+'px');h.style.setProperty('--y',(-60-Math.random()*160)+'px');
+    document.body.appendChild(h);setTimeout(()=>h.remove(),1200)}
+};
+</script>
+</body>
+</html>

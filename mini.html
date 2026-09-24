@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Para Yari ♡</title>
+
+
+<!-- ═══════════════════════════════════════
+     FUENTES
+     ═══════════════════════════════════════ -->
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+  rel="stylesheet"
+>
+
+
+<style>
+
+/* ══════════════════════════════════════════
+   RESET
+   ══════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+
+}
+
+
+/* ══════════════════════════════════════════
+   PALETA YARI
+   ══════════════════════════════════════════ */
+
+:root {
+
+  --pink: #d96f99;
+
+  --pink-dark: #bd527d;
+
+  --pink-medium: #e58bad;
+
+  --pink-light: #f4bfd2;
+
+  --pink-pale: #fbdfe9;
+
+  --pink-soft: #fff0f5;
+
+
+  --white: #fffefe;
+
+  --white-soft: #fff8fb;
+
+
+  --text: #683e50;
+
+  --text-secondary: #85586a;
+
+  --text-light: #a97889;
+
+
+  --border:
+    rgba(217, 111, 153, 0.36);
+
+  --border-soft:
+    rgba(217, 111, 153, 0.20);
+
+
+  --shadow:
+    rgba(217, 111, 153, 0.15);
+
+}
+
+
+/* ══════════════════════════════════════════
+   BODY
+   ══════════════════════════════════════════ */
+
+body {
+
+  background:
+
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 207, 225, 0.9),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at 90% 85%,
+      rgba(248, 190, 213, 0.75),
+      transparent 32%
+    ),
+
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255,255,255,0.95),
+      transparent 52%
+    ),
+
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #fff7fa 48%,
+      #ffe9f2 100%
+    );
+
+
+  color: var(--text);
+
+
+  font-family:
+    'Jost',
+    sans-serif;
+
+
+  font-weight: 300;
+
+
+  min-height: 100vh;
+
+
+  overflow-x: hidden;
+
+
+  position: relative;
+
+}
+
+
+/* ══════════════════════════════════════════
+   TEXTURA
+   ══════════════════════════════════════════ */
+
+body::before {
+
+  content: '';
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image:
+
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+
+  background-size: 180px;
+
+  opacity: 0.35;
+
+  pointer-events: none;
+
+  z-index: 1;
+
+}
+
+
+/* ══════════════════════════════════════════
+   BRILLOS AMBIENTALES
+   ══════════════════════════════════════════ */
+
+.blob {
+
+  position: fixed;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  filter: blur(85px);
+
+  z-index: 0;
+
+}
+
+
+.blob-1 {
+
+  width: 430px;
+
+  height: 430px;
+
+  background:
+    rgba(241, 150, 185, 0.24);
+
+  top: -130px;
+
+  right: -100px;
+
+}
+
+
+.blob-2 {
+
+  width: 350px;
+
+  height: 350px;
+
+  background:
+    rgba(247, 185, 210, 0.30);
+
+  bottom: -110px;
+
+  left: -100px;
+
+}
+
+
+.blob-3 {
+
+  width: 250px;
+
+  height: 250px;
+
+  background:
+    rgba(255, 220, 233, 0.35);
+
+  top: 50%;
+
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+}
+
+
+/* ══════════════════════════════════════════
+   CANVAS ESTRELLAS
+   ══════════════════════════════════════════ */
+
+canvas#stars {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+}
+
+
+/* ══════════════════════════════════════════
+   CONTENEDOR
+   ══════════════════════════════════════════ */
+
+#app {
+
+  position: relative;
+
+  z-index: 2;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    3rem 1.5rem 5rem;
+
+  text-align: center;
+
+}
+
+
+/* ══════════════════════════════════════════
+   PANTALLAS
+   ══════════════════════════════════════════ */
+
+.screen {
+
+  display: none;
+
+  width: 100%;
+
+}
+
+
+.screen.active {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+}
+
+
+/* ══════════════════════════════════════════
+   TEXTO SUPERIOR
+   ══════════════════════════════════════════ */
+
+.eyebrow {
+
+  font-family:
+    'Jost',
+    sans-serif;
+
+  font-weight: 500;
+
+  font-size: 0.65rem;
+
+  letter-spacing: 0.28em;
+
+  text-transform: uppercase;
+
+  color:
+    var(--pink);
+
+  opacity: 0.95;
+
+  margin-bottom: 2rem;
+
+}
+
+
+/* ══════════════════════════════════════════
+   PANDA / GIF
+   ══════════════════════════════════════════ */
+
+.panda-wrap {
+
+  position: relative;
+
+  margin-bottom: 2rem;
+
+}
+
+
+.panda-wrap img {
+
+  width:
+    clamp(100px, 22vw, 150px);
+
+  height:
+    clamp(100px, 22vw, 150px);
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    2px solid
+    rgba(217,111,153,0.38);
+
+  padding: 5px;
+
+  background:
+    rgba(255,255,255,0.70);
+
+  box-shadow:
+    0 10px 35px
+    rgba(217,111,153,0.16);
+
+}
+
+
+/* ══════════════════════════════════════════
+   ANILLOS
+   ══════════════════════════════════════════ */
+
+.panda-ring {
+
+  position: absolute;
+
+  inset: -8px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(217,111,153,0.42);
+
+  animation:
+    pulse-ring
+    3s
+    ease-in-out
+    infinite;
+
+}
+
+
+.panda-ring-2 {
+
+  position: absolute;
+
+  inset: -17px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(229,139,171,0.25);
+
+  animation:
+    pulse-ring
+    3s
+    ease-in-out
+    infinite
+    0.5s;
+
+}
+
+
+@keyframes pulse-ring {
+
+  0%,
+  100% {
+
+    opacity: 0.25;
+
+    transform:
+      scale(1);
+
+  }
+
+  50% {
+
+    opacity: 0.85;
+
+    transform:
+      scale(1.04);
+
+  }
+
+}
+
+
+/* ══════════════════════════════════════════
+   TÍTULO
+   ══════════════════════════════════════════ */
+
+.heading {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-weight: 400;
+
+  font-size:
+    clamp(1.8rem, 5.5vw, 3rem);
+
+  line-height: 1.15;
+
+  color:
+    var(--text);
+
+  margin-bottom: 0.4rem;
+
+}
+
+
+.heading em {
+
+  font-style: italic;
+
+  color:
+    var(--pink);
+
+}
+
+
+/* ══════════════════════════════════════════
+   TEXTO DINÁMICO
+   ══════════════════════════════════════════ */
+
+.typetext {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-style: italic;
+
+  font-size:
+    clamp(0.95rem, 2.5vw, 1.12rem);
+
+  color:
+    var(--text-secondary);
+
+  min-height: 1.6rem;
+
+  margin:
+    0.8rem 0 2rem;
+
+}
+
+
+/* ══════════════════════════════════════════
+   DIVISOR
+   ══════════════════════════════════════════ */
+
+.divider {
+
+  width: 50px;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      var(--pink),
+      transparent
+    );
+
+  opacity: 0.8;
+
+  margin:
+    0 auto 2rem;
+
+}
+
+
+/* ══════════════════════════════════════════
+   BOTONES
+   ══════════════════════════════════════════ */
+
+.btn-row {
+
+  display: flex;
+
+  gap: 1rem;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 3rem;
+
+}
+
+
+.btn {
+
+  font-family:
+    'Jost',
+    sans-serif;
+
+  font-weight: 500;
+
+  font-size: 0.72rem;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+
+  padding:
+    0.75rem 2rem;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition:
+    all 0.3s;
+
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    rgba(255,255,255,0.65);
+
+  color:
+    var(--text-secondary);
+
+  box-shadow:
+    0 5px 20px
+    rgba(217,111,153,0.06);
+
+}
+
+
+.btn-yes {
+
+  border-color:
+    rgba(217,111,153,0.55);
+
+  color:
+    var(--pink-dark);
+
+}
+
+
+.btn-yes:hover {
+
+  background:
+    rgba(251,223,233,0.85);
+
+  border-color:
+    var(--pink);
+
+  color:
+    var(--pink-dark);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 8px 25px
+    rgba(217,111,153,0.15);
+
+}
+
+
+.btn-no {
+
+  position: absolute;
+
+}
+
+
+.btn-no:hover {
+
+  color:
+    var(--text-secondary);
+
+}
+
+
+#no-wrap {
+
+  position: relative;
+
+  width: 120px;
+
+  height: 44px;
+
+}
+
+
+/* ══════════════════════════════════════════
+   PROCESAMIENTO
+   ══════════════════════════════════════════ */
+
+.progress-wrap {
+
+  width:
+    min(340px, 90vw);
+
+  margin:
+    2rem auto 1rem;
+
+}
+
+
+.progress-label {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-style: italic;
+
+  font-size:
+    clamp(1rem, 3vw, 1.3rem);
+
+  color:
+    var(--text-secondary);
+
+  margin-bottom:
+    1.2rem;
+
+}
+
+
+.progress-bar-bg {
+
+  width: 100%;
+
+  height: 4px;
+
+  background:
+    rgba(217,111,153,0.13);
+
+  position: relative;
+
+  border-radius: 10px;
+
+  overflow: visible;
+
+}
+
+
+.progress-bar-fill {
+
+  height: 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--pink-light),
+      var(--pink)
+    );
+
+  width: 0%;
+
+  transition:
+    width 0.05s linear;
+
+  position: relative;
+
+  border-radius: 10px;
+
+}
+
+
+.progress-bar-fill::after {
+
+  content: '';
+
+  position: absolute;
+
+  right: -3px;
+
+  top: -3px;
+
+  width: 10px;
+
+  height: 10px;
+
+  background:
+    var(--pink);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 12px
+    rgba(217,111,153,0.40);
+
+}
+
+
+.progress-pct {
+
+  font-family:
+    'Jost',
+    sans-serif;
+
+  font-weight: 500;
+
+  font-size: 0.65rem;
+
+  letter-spacing: 0.2em;
+
+  color:
+    var(--pink-dark);
+
+  margin-top: 0.8rem;
+
+  text-align: right;
+
+}
+
+
+/* ══════════════════════════════════════════
+   PANTALLA FINAL
+   ══════════════════════════════════════════ */
+
+.final-heading {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-weight: 400;
+
+  font-size:
+    clamp(1.6rem, 5vw, 2.6rem);
+
+  line-height: 1.2;
+
+  color:
+    var(--text);
+
+  margin-bottom: 0.5rem;
+
+}
+
+
+.final-heading em {
+
+  font-style: italic;
+
+  color:
+    var(--pink);
+
+}
+
+
+.final-sub {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-style: italic;
+
+  font-size:
+    clamp(0.9rem, 2.5vw, 1.1rem);
+
+  color:
+    var(--text-secondary);
+
+  margin-bottom: 2rem;
+
+}
+
+
+/* ══════════════════════════════════════════
+   BOTONES DEL REGALO
+   ══════════════════════════════════════════ */
+
+.gift-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 0.5rem;
+
+  font-family:
+    'Jost',
+    sans-serif;
+
+  font-weight: 500;
+
+  font-size: 0.72rem;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+
+  padding:
+    0.8rem 2rem;
+
+  border-radius: 8px;
+
+  border:
+    1px solid
+    rgba(217,111,153,0.38);
+
+  color:
+    var(--pink-dark);
+
+  background:
+    rgba(255,255,255,0.70);
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    all 0.3s;
+
+  margin-top: 0.5rem;
+
+  box-shadow:
+    0 5px 20px
+    rgba(217,111,153,0.06);
+
+}
+
+
+.gift-btn:hover {
+
+  background:
+    rgba(251,223,233,0.90);
+
+  border-color:
+    var(--pink);
+
+  color:
+    var(--pink-dark);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 8px 25px
+    rgba(217,111,153,0.13);
+
+}
+
+
+/* ══════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════ */
+
+.footer-strip {
+
+  position: fixed;
+
+  bottom: 0;
+
+  left: 0;
+
+  right: 0;
+
+  padding:
+    0.9rem 1.5rem;
+
+  text-align: center;
+
+  border-top:
+    1px solid
+    rgba(217,111,153,0.18);
+
+  background:
+    rgba(255,248,251,0.88);
+
+  backdrop-filter:
+    blur(12px);
+
+  z-index: 10;
+
+}
+
+
+.footer-strip p {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-style: italic;
+
+  font-size:
+    clamp(0.75rem, 2vw, 0.9rem);
+
+  color:
+    var(--text-light);
+
+}
+
+
+.footer-strip span {
+
+  font-style: normal;
+
+  color:
+    var(--pink);
+
+}
+
+
+/* ══════════════════════════════════════════
+   PARTÍCULAS
+   ══════════════════════════════════════════ */
+
+.particle {
+
+  position: fixed;
+
+  pointer-events: none;
+
+  z-index: 999;
+
+  font-size: 1.2rem;
+
+  animation:
+    floatUp
+    5s
+    ease-out
+    forwards;
+
+}
+
+
+@keyframes floatUp {
+
+  0% {
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+
+    opacity: 1;
+
+  }
+
+  100% {
+
+    transform:
+      translateY(-65vh)
+      rotate(20deg);
+
+    opacity: 0;
+
+  }
+
+}
+
+
+/* ══════════════════════════════════════════
+   MÓVIL
+   ══════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+
+  .btn-row {
+
+    gap:
+      0.7rem;
+
+  }
+
+
+  .btn {
+
+    padding:
+      0.6rem 1.4rem;
+
+  }
+
+
+  .footer-strip {
+
+    padding:
+      0.75rem 1rem;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ═══════════════════════════════════════
+     FONDOS
+     ═══════════════════════════════════════ -->
+
+<div class="blob blob-1"></div>
+
+<div class="blob blob-2"></div>
+
+<div class="blob blob-3"></div>
+
+
+<!-- Estrellas -->
+
+<canvas id="stars"></canvas>
+
+
+<!-- ═══════════════════════════════════════
+     APLICACIÓN
+     ═══════════════════════════════════════ -->
+
+<div id="app">
+
+
+  <!-- ═══════════════════════════════════════
+       PANTALLA PRINCIPAL
+       ═══════════════════════════════════════ -->
+
+  <div
+    id="screen-main"
+    class="screen active"
+  >
+
+    <p class="eyebrow">
+
+      para Yari
+      &nbsp;·&nbsp;
+      con cariño
+
+    </p>
+
+
+    <!-- GIF -->
+
+    <div class="panda-wrap">
+
+      <div class="panda-ring-2"></div>
+
+      <div class="panda-ring"></div>
+
+      <img
+        src="bubududu-panda.gif"
+        alt="Panda"
+      >
+
+    </div>
+
+
+    <h1 class="heading">
+
+      ¿Soy tu
+      <em>mejor amigo</em>,
+      Yari?
+
+    </h1>
+
+
+    <p
+      class="typetext"
+      id="typetext"
+    ></p>
+
+
+    <div class="divider"></div>
+
+
+    <div class="btn-row">
+
+      <button
+        class="btn btn-yes"
+        id="yes-btn"
+      >
+
+        sí, claro
+
+      </button>
+
+
+      <div id="no-wrap">
+
+        <button
+          class="btn btn-no"
+          id="no-btn"
+          style="top:0;left:0;"
+        >
+
+          para nada
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       PANTALLA DE PROCESAMIENTO
+       ═══════════════════════════════════════ -->
+
+  <div
+    id="screen-loading"
+    class="screen"
+  >
+
+    <p class="eyebrow">
+
+      procesando
+
+    </p>
+
+
+    <div class="progress-wrap">
+
+      <p
+        class="progress-label"
+        id="loading-msg"
+      >
+
+        calculando nuestra amistad...
+
+      </p>
+
+
+      <div class="progress-bar-bg">
+
+        <div
+          class="progress-bar-fill"
+          id="prog-fill"
+        ></div>
+
+      </div>
+
+
+      <p
+        class="progress-pct"
+        id="prog-pct"
+      >
+
+        0%
+
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       PANTALLA FINAL
+       ═══════════════════════════════════════ -->
+
+  <div
+    id="screen-final"
+    class="screen"
+  >
+
+    <p class="eyebrow">
+
+      siempre lo supe
+
+    </p>
+
+
+    <div
+      class="panda-wrap"
+      style="margin-bottom:1.5rem"
+    >
+
+      <div class="panda-ring-2"></div>
+
+      <div class="panda-ring"></div>
+
+      <img
+        src="miss-you-hug.gif"
+        alt="Hug"
+      >
+
+    </div>
+
+
+    <h2 class="final-heading">
+
+      ¡<em>Feliz Cumpleaños</em>,
+      Yari!
+
+    </h2>
+
+
+    <p class="final-sub">
+
+      Sabía que ibas a decir que sí. ♡
+
+    </p>
+
+
+    <div class="divider"></div>
+
+
+    <!-- ═══════════════════════════════════════
+         MENÚ
+         ═══════════════════════════════════════ -->
+
+    <button
+      class="gift-btn"
+      onclick="goTo('logros.html')"
+    >
+
+      ✦ &nbsp;
+      logros desbloqueados
+
+    </button>
+
+
+    <a
+      href="./pdf/carta.pdf"
+      download="Regalo_Para_Yari.pdf"
+      class="gift-btn"
+    >
+
+      ✉ &nbsp;
+      cartita de regalo
+
+    </a>
+
+
+    <button
+      class="gift-btn"
+      onclick="goTo('universo.html')"
+    >
+
+      ♡ &nbsp;
+      universo de recuerdos
+
+    </button>
+
+
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════ -->
+
+<div class="footer-strip">
+
+  <p>
+
+    a pesar de la distancia,
+    siempre celebrando contigo
+    &nbsp;·&nbsp;
+    con cariño,
+    <span>para Yari</span>
+
+  </p>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SONIDOS
+     ═══════════════════════════════════════ -->
+
+<audio
+  id="snd-yes"
+  src="https://www.fesliyanstudios.com/play-mp3/387"
+  preload="auto"
+></audio>
+
+
+<audio
+  id="snd-no"
+  src="https://www.fesliyanstudios.com/play-mp3/6678"
+  preload="auto"
+></audio>
+
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════ -->
+
+<script>
+
+
+/* ══════════════════════════════════════════
+   ESTRELLAS
+   ══════════════════════════════════════════ */
+
+const canvas =
+  document.getElementById('stars');
+
+const ctx =
+  canvas.getContext('2d');
+
+let stars = [];
+
+
+function resizeC() {
+
+  canvas.width =
+    innerWidth;
+
+  canvas.height =
+    innerHeight;
+
+}
+
+
+resizeC();
+
+
+addEventListener(
+  'resize',
+  resizeC
+);
+
+
+/*
+   Estrellas pequeñas
+*/
+
+for (
+  let i = 0;
+  i < 150;
+  i++
+) {
+
+  stars.push({
+
+    x:
+      Math.random() *
+      innerWidth,
+
+    y:
+      Math.random() *
+      innerHeight,
+
+    r:
+      Math.random() *
+      1.1 +
+      0.3,
+
+    speed:
+      Math.random() *
+      0.004 +
+      0.002,
+
+    phase:
+      Math.random() *
+      Math.PI *
+      2
+
+  });
+
+}
+
+
+/*
+   Estrellas grandes
+   tipo ✦
+*/
+
+let sparkleStars = [];
+
+
+for (
+  let i = 0;
+  i < 35;
+  i++
+) {
+
+  sparkleStars.push({
+
+    x:
+      Math.random() *
+      innerWidth,
+
+    y:
+      Math.random() *
+      innerHeight,
+
+    size:
+      Math.random() *
+      3 +
+      2,
+
+    speed:
+      Math.random() *
+      0.003 +
+      0.001,
+
+    phase:
+      Math.random() *
+      Math.PI *
+      2
+
+  });
+
+}
+
+
+/*
+   Dibujar estrellas
+*/
+
+function drawS(t) {
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  /* ───── estrellas pequeñas ───── */
+
+  stars.forEach(s => {
+
+    const a =
+      0.25 +
+      0.60 *
+      (
+        0.5 +
+        0.5 *
+        Math.sin(
+          t *
+          s.speed +
+          s.phase
+        )
+      );
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+      s.x,
+      s.y,
+      s.r,
+      0,
+      Math.PI * 2
+    );
+
+
+    ctx.fillStyle =
+      `rgba(
+        214,
+        92,
+        137,
+        ${a.toFixed(3)}
+      )`;
+
+
+    ctx.fill();
+
+  });
+
+
+  /* ───── estrellas brillantes ───── */
+
+  sparkleStars.forEach(s => {
+
+    const a =
+      0.25 +
+      0.70 *
+      (
+        0.5 +
+        0.5 *
+        Math.sin(
+          t *
+          s.speed +
+          s.phase
+        )
+      );
+
+
+    const size =
+      s.size *
+      (
+        0.75 +
+        0.25 *
+        Math.sin(
+          t *
+          s.speed +
+          s.phase
+        )
+      );
+
+
+    ctx.save();
+
+
+    ctx.translate(
+      s.x,
+      s.y
+    );
+
+
+    ctx.rotate(
+      Math.PI / 4
+    );
+
+
+    ctx.fillStyle =
+      `rgba(
+        217,
+        111,
+        153,
+        ${a.toFixed(3)}
+      )`;
+
+
+    ctx.fillRect(
+      -size / 2,
+      -size / 2,
+      size,
+      size
+    );
+
+
+    ctx.restore();
+
+  });
+
+
+  requestAnimationFrame(
+    drawS
+  );
+
+}
+
+
+requestAnimationFrame(
+  drawS
+);
+
+
+/* ══════════════════════════════════════════
+   MENSAJES
+   ══════════════════════════════════════════ */
+
+const msgs = [
+
+  "lit, eres mi dúo favorito para cualquier juego ♡",
+
+  "entre partidas y partidas terminamos hablando de todo",
+
+  "hemos compartido demasiados momentos bonitos",
+
+  "la distancia nunca nos impidió pasarla increíble",
+
+  "¿de verdad vas a decir que no a tu dúo?",
+
+  "después de tantos juegos, esto ya estaba decidido",
+
+  "Yari, sabes perfectamente cuál es la respuesta ♡",
+
+  "no acepto un 'no' de mi mejor amiga",
+
+  "tantas partidas juntos tenían que servir para algo",
+
+  "solo falta que confirmes algo que los dos sabemos"
+
+];
+
+
+let mi = 0;
+
+let ci = 0;
+
+let del = false;
+
+
+const tel =
+  document.getElementById(
+    'typetext'
+  );
+
+
+function typeLoop() {
+
+  const cur =
+    msgs[mi];
+
+
+  if (del) {
+
+    ci--;
+
+  }
+
+  else {
+
+    ci++;
+
+  }
+
+
+  tel.textContent =
+    cur.substring(
+      0,
+      ci
+    );
+
+
+  if (
+    !del &&
+    ci === cur.length
+  ) {
+
+    setTimeout(
+      () => del = true,
+      1400
+    );
+
+  }
+
+
+  else if (
+    del &&
+    ci === 0
+  ) {
+
+    del = false;
+
+    mi =
+      (mi + 1)
+      %
+      msgs.length;
+
+  }
+
+
+  setTimeout(
+    typeLoop,
+    del
+      ? 28
+      : 55
+  );
+
+}
+
+
+typeLoop();
+
+
+/* ══════════════════════════════════════════
+   BOTÓN NO
+   ══════════════════════════════════════════ */
+
+const noBtn =
+  document.getElementById(
+    'no-btn'
+  );
+
+
+const noWrap =
+  document.getElementById(
+    'no-wrap'
+  );
+
+
+const sndNo =
+  document.getElementById(
+    'snd-no'
+  );
+
+
+noBtn.addEventListener(
+  'mouseenter',
+  () => {
+
+    sndNo.currentTime =
+      0;
+
+    sndNo
+      .play()
+      .catch(
+        () => {}
+      );
+
+  }
+);
+
+
+noBtn.addEventListener(
+  'mouseover',
+  () => {
+
+    const footer =
+      70;
+
+
+    const bw =
+      noBtn.offsetWidth;
+
+
+    const bh =
+      noBtn.offsetHeight;
+
+
+    const maxX =
+      innerWidth -
+      bw -
+      20;
+
+
+    const maxY =
+      innerHeight -
+      bh -
+      footer -
+      20;
+
+
+    const x =
+      Math.random() *
+      Math.max(
+        maxX,
+        20
+      );
+
+
+    const y =
+      Math.random() *
+      Math.max(
+        maxY,
+        20
+      );
+
+
+    noBtn.style.position =
+      'fixed';
+
+
+    noBtn.style.left =
+      x + 'px';
+
+
+    noBtn.style.top =
+      y + 'px';
+
+
+    noBtn.style.zIndex =
+      '100';
+
+  }
+
+);
+
+
+/* ══════════════════════════════════════════
+   BOTÓN SÍ
+   ══════════════════════════════════════════ */
+
+document
+  .getElementById('yes-btn')
+  .addEventListener(
+    'click',
+    () => {
+
+
+      noBtn.style.position =
+        '';
+
+
+      document
+        .getElementById(
+          'snd-yes'
+        )
+        .play()
+        .catch(
+          () => {}
+        );
+
+
+      show(
+        'screen-loading'
+      );
+
+
+      let pct =
+        0;
+
+
+      const loadMsgs = [
+
+        'verificando nuestra amistad...',
+
+        'calculando horas jugando en dúo...',
+
+        'procesando nuestras conversaciones...',
+
+        'recordando todos nuestros momentos...',
+
+        'confirmando que somos un dúo increíble...',
+
+        'preparando algo especial para Yari...',
+
+        'casi listo, Yari... ♡'
+
+      ];
+
+
+      const fill =
+        document.getElementById(
+          'prog-fill'
+        );
+
+
+      const pctEl =
+        document.getElementById(
+          'prog-pct'
+        );
+
+
+      const msgEl =
+        document.getElementById(
+          'loading-msg'
+        );
+
+
+      const iv =
+        setInterval(
+          () => {
+
+            pct++;
+
+
+            fill.style.width =
+              pct + '%';
+
+
+            pctEl.textContent =
+              pct + '%';
+
+
+            const index =
+              Math.min(
+                Math.floor(
+                  pct /
+                  15
+                ),
+                loadMsgs.length - 1
+              );
+
+
+            msgEl.textContent =
+              loadMsgs[index];
+
+
+            spawnParticle();
+
+
+            if (
+              pct >= 100
+            ) {
+
+              clearInterval(iv);
+
+
+              setTimeout(
+                () => {
+
+                  show(
+                    'screen-final'
+                  );
+
+                },
+                500
+              );
+
+            }
+
+          },
+          30
+        );
+
+    }
+  );
+
+
+/* ══════════════════════════════════════════
+   CAMBIAR PANTALLA
+   ══════════════════════════════════════════ */
+
+function show(id) {
+
+  document
+    .querySelectorAll('.screen')
+    .forEach(
+      s =>
+        s.classList.remove(
+          'active'
+        )
+    );
+
+
+  document
+    .getElementById(id)
+    .classList.add(
+      'active'
+    );
+
+}
+
+
+/* ══════════════════════════════════════════
+   PARTÍCULAS
+   ══════════════════════════════════════════ */
+
+const emojis = [
+
+  '♡',
+
+  '✦',
+
+  '✧',
+
+  '💗',
+
+  '🌸',
+
+  '✨',
+
+  '🎀'
+
+];
+
+
+function spawnParticle() {
+
+  const p =
+    document.createElement(
+      'div'
+    );
+
+
+  p.className =
+    'particle';
+
+
+  p.textContent =
+    emojis[
+      Math.floor(
+        Math.random() *
+        emojis.length
+      )
+    ];
+
+
+  p.style.left =
+    Math.random() *
+    100 +
+    'vw';
+
+
+  p.style.bottom =
+    '60px';
+
+
+  p.style.fontSize =
+    (
+      Math.random() *
+      14 +
+      14
+    ) +
+    'px';
+
+
+  p.style.color =
+    Math.random() > 0.5
+      ? '#d96f99'
+      : '#e58bad';
+
+
+  document
+    .body
+    .appendChild(p);
+
+
+  setTimeout(
+    () =>
+      p.remove(),
+    5000
+  );
+
+}
+
+
+/* ══════════════════════════════════════════
+   NAVEGACIÓN
+   ══════════════════════════════════════════ */
+
+function goTo(url) {
+
+  const mus =
+    document.getElementById(
+      'bg-music'
+    );
+
+
+  if (mus) {
+
+    mus.pause();
+
+  }
+
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+
+  const checkFocus =
+    setInterval(
+      () => {
+
+        if (
+          document.hasFocus()
+        ) {
+
+          if (mus) {
+
+            mus
+              .play()
+              .catch(
+                () => {}
+              );
+
+          }
+
+
+          clearInterval(
+            checkFocus
+          );
+
+        }
+
+      },
+      1000
+    );
+
+}
+
+
+</script>
+
+
+<!-- ═══════════════════════════════════════
+     MÚSICA
+     ═══════════════════════════════════════ -->
+
+<audio
+  id="bg-music"
+  src="./audio/fin.mp3"
+  loop
+  autoplay
+></audio>
+
+<script>
+  document.getElementById("bg-music").volume = 0.6;
+</script>
+
+
+</body>
+
+</html>
